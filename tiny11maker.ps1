@@ -18,7 +18,8 @@ $adminSID = New-Object System.Security.Principal.SecurityIdentifier("S-1-5-32-54
 $adminGroup = $adminSID.Translate([System.Security.Principal.NTAccount])
 $myWindowsID=[System.Security.Principal.WindowsIdentity]::GetCurrent()
 $myWindowsPrincipal=new-object System.Security.Principal.WindowsPrincipal($myWindowsID)
-$adminRole=[System.Security.Principal.WindowsBuiltInRole]::Administrator
+$adminRoleSID = Get-LocalUser | Where-Object {$_.sid -like "S-1-5-21*-500"}
+$adminRole=[System.Security.Principal.WindowsBuiltInRole]::($adminRoleSID.name)
 if (! $myWindowsPrincipal.IsInRole($adminRole))
 {
     Write-Host "Restarting Tiny11 image creator as admin in a new window, you can close this one."
